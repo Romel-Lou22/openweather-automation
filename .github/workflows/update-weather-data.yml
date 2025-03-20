@@ -30,8 +30,8 @@ jobs:
 
       - name: Comprobar cambios en el CSV
         run: |
-          git config --global user.email "tu_email@ejemplo.com"
-          git config --global user.name "TuNombre"
+          git config --global user.email "romelalba54@gmail.com"
+          git config --global user.name "Romel-Lou22"
           if [ -f openweather_data.csv ]; then
             git add openweather_data.csv
             git commit -m "Actualización automática de datos de OpenWeather [skip ci]" || echo "No hay cambios"
