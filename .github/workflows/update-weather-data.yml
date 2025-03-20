@@ -1,0 +1,45 @@
+name: Actualizar datos de OpenWeather
+
+# Se ejecuta cada hora
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:  # Permite ejecución manual desde GitHub
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pandas
+
+      - name: Ejecutar script de OpenWeather
+        run: |
+          python openweather_data.py
+
+      - name: Comprobar cambios en el CSV
+        run: |
+          git config --global user.email "tu_email@ejemplo.com"
+          git config --global user.name "TuNombre"
+          if [ -f openweather_data.csv ]; then
+            git add openweather_data.csv
+            git commit -m "Actualización automática de datos de OpenWeather [skip ci]" || echo "No hay cambios"
+          else
+            echo "No se encontró el archivo CSV."
+          fi
+
+      - name: Subir cambios al repositorio
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
